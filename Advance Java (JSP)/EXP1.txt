@@ -1,0 +1,52 @@
+How to create a user login and logout session? And how to count the number of login attempts?
+
+protected void doPost(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
+    try {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/mutualfund", "root", "");
+        Statement stmt = con.createStatement();
+
+        String uname = request.getParameter("username");
+        String pass = request.getParameter("password");
+        String query = "SELECT * FROM `login_table` WHERE `username`=\""+uname +"\" and `password`=\""+pass+"\"";
+
+        ResultSet result = stmt.executeQuery(query);            
+
+        if(result.next())
+        {
+            System.out.println("entered into if loop");
+            if (result.getString(1).equals(uname)
+                    && result.getString(2).equals(pass)) {
+                System.out.println("Uname and pass are correct");
+                if (result.getBoolean(7) == true) {
+                    System.out.println("redirecting to admin profile");
+                    response.sendRedirect("displayFunds.jsp");
+                }
+                else if ((result.getBoolean(7) == false)
+                        && (result.getInt(3)==0)) {
+                    System.out.println("first time login for customer, redirecting to change pass");
+
+                    response.sendRedirect("changePassword.jsp?name="
+                            + uname + "&&pass=" + pass);
+
+                }
+                else if ((result.getBoolean(7) == false)
+                        && (result.getInt(3)==1)) {
+                    System.out.println("active customer login");
+                    response.sendRedirect("custProfile.jsp");
+                }
+            }
+
+            else {
+
+                response.sendRedirect("loginFailed.jsp");
+            }
+        }
+
+    } catch (Exception ex) {
+        Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+}

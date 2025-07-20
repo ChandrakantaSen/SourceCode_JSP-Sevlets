@@ -1,0 +1,51 @@
+//writing a single servlet to add/edit/delete an Item and also to list items
+
+	
+//itemslisting.jsp
+
+...
+<table>
+<c:forEach var="item" items="${items}" varStatus="listCount">
+
+<tr><td>${listCount.count} </td>
+<c:url value="edititem" var="edititemurl">
+
+    <c:param name="itemId" value="${item.item_id}" />
+
+</c:url>
+<td><a href="${edititemurl }" >${item.name}</a></td>
+<c:url value="deleteitem" var="deleteitemurl">
+
+    <c:param name="itemId" value="${item.item_id}" />
+
+</c:url>
+
+<td><a href="${deleteitemurl}" >DELETE</a></td>
+
+</tr>
+
+</c:forEach>
+
+</table>
+...
+<a href="<c:url value="addItem"/>">add new item </a>
+...
+
+<!-- ........................................................................... -->
+
+public void doGet(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
+    String additemop = req.getParameter("additemoperation");
+    String edititem = req.getParameter("additemoperation");
+    String itemId =  req.getParameter("itemId");
+    ...
+    if(additemop!=null){
+      showAddItemPage(req,resp);
+    }
+    else if((edititemop!=null) && (itemId != null)){
+      showEditItemPage(req,resp);
+    }
+    else{
+      showListItemsPage(req,resp);
+    }
+
+}

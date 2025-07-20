@@ -1,0 +1,214 @@
+//Edit Data Using JSP / Servlet
+
+Hi guys,
+
+I need your help. I was trying to update a certain data in my database using jsp and servlet. However i can't figure out why it wouldn't update the data. :(
+
+I'd greatly appreciate it if you could check my codes below. THANKS MUCH!
+
+Here's my jsp
+
+    <html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    </head>
+    <body>
+    <c:import url="../menu.jsp"/> <br>
+    <jsp:useBean id="foo" class="com.dole.cdms.application.Application" scope="request"/>
+    <form action="ApplicationServlet" method="POST">
+    <table class="form">
+    <tr><td>Application ID:</td><td> <input type="text" name="appId" value="<jsp:getProperty name="foo" property="appId"/>"></td></tr>
+    <tr><td>Application Name:</td><td> <input type="text" name="appName" value="<jsp:getProperty name="foo" property="appName"/>"></td></tr>
+    <tr><td>Application Status:</td><td> <input name="appStatus" type="radio" value="1" checked="checked"> Active
+    <input name="appStatus" type="radio" value="0">Inactive</td></tr>
+    <tr><td></td><td><input type="Submit" value="Update"></td></tr>
+    </table>
+    </form>
+    </body>
+    </html>
+
+Here's my bean class:
+
+    import java.sql.Date;
+    /**
+    *
+    * @author Administrator
+    */
+    public class Application {
+    private String appId = null;
+    private String appName = null;
+    private int appStatus = 0;
+    private int sysId = 0;
+    private String sysUser = null;
+    private String sysHost = null;
+    private Date sysDateTime = null;
+    public Application(){
+    }
+    public Application (String app_id,
+    String app_name,
+    int app_status,
+    int sys_id,
+    String sys_user,
+    String sys_host,
+    Date sys_datetime){
+    this.appId=app_id;
+    this.appName=app_name;
+    this.appStatus=app_status;
+    this.sysDateTime=sys_datetime;
+    this.sysHost=sys_host;
+    this.sysId=sys_id;
+    this.sysUser=sys_user;
+    }
+    /**
+    * @return the appId
+    */
+    public String getAppId() {
+    return appId;
+    }
+    /**
+    * @param appId the appId to set
+    */
+    public void setAppId(String appId) {
+    this.appId = appId;
+    }
+    /**
+    * @return the appName
+    */
+    public String getAppName() {
+    return appName;
+    }
+    /**
+    * @param appName the appName to set
+    */
+    public void setAppName(String appName) {
+    this.appName = appName;
+    }
+    /**
+    * @return the appStatus
+    */
+    public int getAppStatus() {
+    return appStatus;
+    }
+    /**
+    * @param appStatus the appStatus to set
+    */
+    public void setAppStatus(int appStatus) {
+    this.appStatus = appStatus;
+    }
+    /**
+    * @return the sysId
+    */
+    public int getSysId() {
+    return sysId;
+    }
+    /**
+    * @param sysId the sysId to set
+    */
+    public void setSysId(int sysId) {
+    this.sysId = sysId;
+    }
+    /**
+    * @return the sysUser
+    */
+    public String getSysUser() {
+    return sysUser;
+    }
+    /**
+    * @param sysUser the sysUser to set
+    */
+    public void setSysUser(String sysUser) {
+    this.sysUser = sysUser;
+    }
+    /**
+    * @return the sysHost
+    */
+    public String getSysHost() {
+    return sysHost;
+    }
+    /**
+    * @param sysHost the sysHost to set
+    */
+    public void setSysHost(String sysHost) {
+    this.sysHost = sysHost;
+    }
+    /**
+    * @return the sysDateTime
+    */
+    public Date getSysDateTime() {
+    return sysDateTime;
+    }
+    /**
+    * @param sysDateTime the sysDateTime to set
+    */
+    public void setSysDateTime(Date sysDateTime) {
+    this.sysDateTime = sysDateTime;
+    }
+    }
+
+For the Model Class:
+
+    public class ApplicationModel {
+    Application editApplication(String id, String name) throws ClassNotFoundException, SQLException, NamingException {
+    Connection conn = null;
+    Statement statement = null;
+    ResultSet rs = null;
+    try {
+    conn = ConnectionFactory.getConnection();
+    statement = conn.createStatement();
+    PreparedStatement ps = null;
+    ps = conn.prepareStatement("UPDATE tblApplication SET appID=?, appName = ? WHERE appID = ?");
+    ps.setString(1, id);
+    ps.setString(2, name);
+    ps.setString(3, id);
+    ps.executeUpdate();
+    // int i = statement.executeUpdate("UPDATE tblApplication SET appID='" + id + "', appName='" + name + "' WHERE appID='" + id + "'");
+    // System.out.println(name);
+    // if (i != 0) {
+    // System.out.println("Application updated!");
+    // } else {
+    // System.out.println("Error 0.o");
+    // }
+    return null;
+    } finally {
+    if (statement != null) {
+    statement.close();
+    }
+    if (conn != null) {
+    conn.close();
+    }
+    }
+    }
+
+Lastly for the Servlet:
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException, ClassNotFoundException, SQLException, NamingException {
+    response.setContentType("text/html;charset=UTF-8");
+    String mode = null;
+    if (mode== null){
+    mode=request.getParameter("editApp");
+    if(mode!=null) {
+    editApplication(request, response);
+    }
+    }
+    } else {
+    response.sendRedirect("/CNRDocSys/error/error.jsp");
+    }
+    protected void editApplication(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException, ClassNotFoundException, SQLException, NamingException {
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    try {
+    String id = request.getParameter("appId");
+    String name=request.getParameter("appName");
+    ApplicationModel model = new ApplicationModel();
+    Application application = model.editApplication(id,name);
+    request.setAttribute("foo", application);
+    getAllApplications(request, response);
+    } catch (Exception e) {
+    response.sendRedirect("/CNRDocSys/error/error.jsp");
+    } finally {
+    out.close();
+    }
+    }

@@ -1,0 +1,64 @@
+/*  Code sample of session logout process  */
+
+package org.owasp.javaproject.logout;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Code sample showing how to perform a complete logout
+ */
+@SuppressWarnings("serial")
+@WebServlet("/Logout")
+public class LogoutCodeSample extends HttpServlet {
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		/*
+		 * First step&nbsp;: Invalidate user session
+		 */
+		HttpSession session = request.getSession(false);
+		if (session&nbsp;!= null) {
+			session.invalidate();
+		}
+
+		/*
+		 * Second step&nbsp;: Invalidate all cookies by, for each cookie received,
+		 * overwriting value and instructing browser to deletes it
+		 */
+		Cookie[] cookies = request.getCookies();
+		if (cookies&nbsp;!= null &amp;&amp; cookies.length &gt; 0) {
+			for (Cookie cookie&nbsp;: cookies) {
+				cookie.setValue("-");
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+		}
+
+	}
+
+}
+

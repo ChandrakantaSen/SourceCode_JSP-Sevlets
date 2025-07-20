@@ -1,0 +1,14 @@
+my logout servlet as follows
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+     PrintWriter out = response.getWriter();
+     try {
+     HttpSession session=request.getSession();
+     session.invalidate();
+     out.println("<div style='float:center;font-size:25px;'>"+"click here to "
+           +"<a href='index.jsp'>login</a></div>");
+         }finally {            
+     out.close();
+     }
+}

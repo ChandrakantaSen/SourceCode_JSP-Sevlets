@@ -1,0 +1,82 @@
+My login servlet is as follows
+
+protected void doPost(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
+    response.setContentType("text/html");
+    HttpSession sessions = request.getSession();
+    synchronized(sessions) {
+    Integer accessCount =
+    (Integer)sessions.getAttribute("accessCount");
+    if (accessCount == null) {
+    accessCount = 1;
+    } else {
+    accessCount = accessCount + 1;
+    }
+     sessions.setAttribute("accessCount", accessCount);
+    }
+    try {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/mutualfund", "root", "");
+        Statement stmt = con.createStatement();
+        System.out.println("entered second try");
+        String uname = request.getParameter("username");
+        String pass = request.getParameter("password");
+        String query = "SELECT * FROM `login_table` WHERE `username`=\""+uname +"\"";
+
+        ResultSet result = stmt.executeQuery(query);            
+
+        if(result.next())
+        {
+            System.out.println("entered into if loop");
+            if (result.getString(1).equals(uname)
+                    && result.getString(2).equals(pass)) {
+                System.out.println("Uname and pass are correct");
+                HttpSession session=request.getSession(true);
+
+
+                session.setAttribute("user",uname);
+                if (result.getBoolean(7) == true) {
+                    System.out.println("redirecting to admin profile");
+                    response.sendRedirect("displayFunds.jsp");
+                }
+                else if ((result.getBoolean(7) == false)
+                        && (result.getInt(3)==0)) {
+                    System.out.println("first time login for customer, redirecting to change pass");
+
+                    response.sendRedirect("changePassword.jsp?name="
+                            + uname + "&&pass=" + pass);
+
+                }
+                else if ((result.getBoolean(7) == false)
+                        && (result.getInt(3)==1)) {
+                    System.out.println("active customer login");
+                    //response.sendRedirect("welcome.jsp?name="+uname);
+                    RequestDispatcher view =   
+                              request.getRequestDispatcher("welcome.jsp?name="+uname);
+
+                        view.forward(request, response);
+                }
+            }
+
+            else {
+                Integer accessCount =
+                        (Integer)sessions.getAttribute("accessCount");
+                System.out.println(accessCount);
+
+                if(accessCount<=3)
+                response.sendRedirect("loginFailed.jsp");
+
+                else
+                {
+                    sessions.invalidate();
+                    response.sendRedirect("ForgotPass.jsp");
+                }
+            }
+        }
+
+    } catch (Exception ex) {
+        Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+}

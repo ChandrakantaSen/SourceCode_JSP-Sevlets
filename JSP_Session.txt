@@ -1,0 +1,33 @@
+A session is an object associated with a visitor.  Data can be put in the session and retrieved from it, much like a Hashtable.  A different set of data is kept for each visitor to the site.
+
+Here is a set of pages that put a user's name in the session, and display it elsewhere.  Try out installing and using these.
+
+First we have a form, let us call it GetName.html
+
+<HTML>
+<BODY>
+<FORM METHOD=POST ACTION="SaveName.jsp">
+What's your name? <INPUT TYPE=TEXT NAME=username SIZE=20>
+<P><INPUT TYPE=SUBMIT>
+</FORM>
+</BODY>
+</HTML>
+The target of the form is "SaveName.jsp", which saves the user's name in the session.  Note the variable  "session".  This is another variable that is normally made available in JSPs, just like out and request variables.  (In the @page directive, you can indicate that you do not need sessions, in which case the "session" variable will not be made available.)
+<%
+   String name = request.getParameter( "username" );
+   session.setAttribute( "theName", name );
+%>
+<HTML>
+<BODY>
+<A HREF="NextPage.jsp">Continue</A>
+</BODY>
+</HTML>
+The SaveName.jsp saves the user's name in the session, and puts a link to another page, NextPage.jsp.
+NextPage.jsp shows how to retrieve the saved name.
+
+<HTML>
+<BODY>
+Hello, <%= session.getAttribute( "theName" ) %>
+</BODY>
+</HTML>
+If you bring up two different browsers (not different windows of the same browser), or run two browsers from two different machines, you can put one name in one browser and another name in another browser, and both names will be kept track of.

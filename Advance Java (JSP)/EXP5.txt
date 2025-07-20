@@ -1,0 +1,50 @@
+
+CODE:
+
+  public static void insertWinner(String winner) throws IOException{
+
+        String filename= "Winner.txt";
+        FileWriter fw = new FileWriter(filename,true); //the true will append the new data
+        fw.write("Winner is" + winner);//appends the string to the file
+        fw.close();
+
+    }
+
+
+EDIT
+
+public static void insertWinner(String winner) throws IOException{
+
+
+        FileWriter out = new FileWriter("Winner.txt");
+        out.write("Hello");
+        out.close();
+        out = new FileWriter("Winner.txt", true);
+        out.write(", world!");
+        out.close();
+
+    }
+
+EDIT:
+
+             response.setContentType("text/html");
+
+
+             String filename = "Winner.txt";
+
+             ServletContext context = getServletContext();
+
+
+             InputStream is = context.getResourceAsStream(filename);
+             if (is != null) {
+                 InputStreamReader isr = new InputStreamReader(is);
+                 BufferedReader reader = new BufferedReader(isr);
+                 PrintWriter writer = response.getWriter();
+                 String text = "Winner is";
+
+
+                 while ((text = reader.readLine()) != null) {
+                     writer.println(text);
+                 }
+             }
+

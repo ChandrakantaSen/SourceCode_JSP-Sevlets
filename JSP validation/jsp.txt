@@ -1,0 +1,185 @@
+<html>
+<form method="post">
+Select Programming Language:
+<select name="lang">
+<option value="C/C++">C/C++</option>
+<option value="C#">C#</option>
+<option value="Java">Java</option>
+<option value="Perl">Perl</option>
+<option value="Python">Python</option>
+</select><br>
+<input type="submit" value="Submit"><br>
+</form>
+</html>
+
+<%
+String selectedValue=request.getParameter("lang");
+out.println("Selected Value is: "+selectedValue);
+%>
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                    radio button validation
+
+
+
+HTML>
+    <HEAD>
+        <TITLE>Submitting Radio Buttons</TITLE>
+    </HEAD>
+ 
+    <BODY>
+        <H1>Submitting Radio Buttons</H1>
+        <FORM ACTION="formAction.jsp" METHOD="post">
+             <INPUT TYPE="radio" NAME="radios" VALUE="radio1" CHECKED>
+             Radio Button 1
+            <BR>
+            <INPUT TYPE="radio" NAME="radios" VALUE="radio2">
+             Radio Button 2
+            <BR>
+            <INPUT TYPE="radio" NAME="radios" VALUE="radio3">
+             Radio Button 3
+            <BR>
+            <INPUT TYPE="submit" VALUE="Submit">
+        </FORM>
+    </BODY>
+</HTML>
+
+//File: formAction.jsp
+<HTML>
+    <HEAD>
+        <TITLE>Reading Radio Buttons</TITLE>
+    </HEAD>
+
+    <BODY>
+        <H1>Reading Radio Buttons</H1>
+        <%
+            if(request.getParameter("radios") != null) {
+                if(request.getParameter("radios").equals("radio1")) {
+                    out.println("Radio button 1 was selected.<BR>");
+                }
+                else {
+                    out.println("Radio button 1 was not selected.<BR>");
+                }
+                if(request.getParameter("radios").equals("radio2")) {
+                    out.println("Radio button 2 was selected.<BR>");
+                }
+                else {
+                    out.println("Radio button 2 was not selected.<BR>");
+                }
+                if(request.getParameter("radios").equals("radio3")) {
+                    out.println("Radio button 3 was selected.<BR>");
+                }
+                else {
+                    out.println("Radio button 3 was not selected.<BR>");
+                }
+            }
+        %>
+    </BODY>
+</HTML>
+           
+
+
+checkbox ( java script with jsp)
+------------------------------------------------------
+
+
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript">
+function checkBox()
+{
+for(var i=0; i < document.form1.subject.length; i++)
+{
+if(!document.form1.subject[i].checked)
+{
+alert("Please Select Your Subject");
+return false;
+}
+else
+{
+alert("Click Submit to Know your subject list");
+return true;
+}
+}
+}
+</script>
+<title>JSP Checkbox</title>
+</head>
+<body>
+<form name="form1" onsubmit="checkBox()">
+<h3>Please Select your Subject</h3>
+<p><input type="checkbox" name="subject" value="Math"/>Math</p>
+<p><input type="checkbox" name="subject" value="Science"/>Science</p>
+<p><input type="checkbox" name="subject" value="Hindi"/>Hindi</p>
+<p><input type="checkbox" name="subject" value="English"/>English</p>
+<p><input type="checkbox" name="subject" value="Social Science"/>Social Science</p>
+<p><input type="submit" value="submit" />
+</form>
+<%
+String subject[]= request.getParameterValues("subject");
+if(subject != null)
+{
+%>
+<h4>You selected subject </h4>
+<ul>
+<%
+for(int i=0; i<subject.length; i++)
+{
+%>
+<li><%=subject[i]%></li>
+<%
+}
+%>
+</ul>
+<%
+}
+%>
+</body>
+</html>
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ check box with (jsp only )
+
+
+
+
+<html>
+<h2>Select Languages:</h2>
+
+<form ACTION="jspCheckBox.jsp">
+<input type="checkbox" name="id" value="Java"> Java<BR>
+<input type="checkbox" name="id" value=".NET"> .NET<BR>
+<input type="checkbox" name="id" value="PHP"> PHP<BR>
+<input type="checkbox" name="id" value="C/C++"> C/C++<BR>
+<input type="checkbox" name="id" value="PERL"> PERL <BR>
+<input type="submit" value="Submit">
+</form>
+<%
+
+String select[] = request.getParameterValues("id"); 
+if (select != null && select.length != 0) {
+out.println("You have selected: ");
+for (int i = 0; i < select.length; i++) {
+out.println(select[i]); 
+}
+}
+%>
+</html>
+
+
+                              
+
+
+
+
+
+
+
+
+
+
+     

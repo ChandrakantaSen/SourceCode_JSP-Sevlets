@@ -1,0 +1,47 @@
+<div class="menulink"><a href="Logout">Logout</a></div>
+<% String user=request.getParameter("name");
+Class.forName("com.mysql.jdbc.Driver");
+    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mutualfund", "root", "");
+
+
+    Statement statement = connection.createStatement();
+    String query="SELECT * FROM `cust_info_table` WHERE `cust_id`=\""+user +"\"";
+    ResultSet resultset =  statement.executeQuery(query) ;
+    while(resultset.next())
+    {
+    %>
+<br/><br/><br/>
+<h4>Welcome&nbsp;<input type="button"  class="button rounded red" value="<% out.println(user);    %>" name="uname" /> </h4><br/><br/>
+
+<form method="post" name="frm" action="UpdateProfile" onsubmit="return checkValues();">
+
+    <br/><br/><table id="cust" border="0" align="center">
+        <tr>
+            <th>Customer ID</th>
+            <td><input type ="text" name= "uid" value="<%= resultset.getString(1) %>" readonly></td>
+       </tr>
+       <tr>
+            <th>FirstName</th>
+            <td><input type="text" name= "fname" value="<%= resultset.getString(2) %>" ></td>
+        </tr>
+        <tr>
+            <th>LastName</th>
+            <td><input type="text" name= "lname" value="<%= resultset.getString(3) %>" ></td>
+        </tr>
+        <tr>
+            <th>Phone Number</th>
+            <td><input type="text" name= "phn" value="<%= resultset.getString(4) %>" onkeyup="javascript:numberOnly(this);" ></td>
+        </tr>
+        <tr>
+            <th>Email-Id</th>
+            <td><input type="text" name= "mail" value="<%= resultset.getString(5) %>" ></td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td><input type="text" name= "addr" value="<%= resultset.getString(6) %>" ></td>
+        </tr>
+
+   </table>
+   <br><br/><br/><br/>
+   <input type="submit" value="Edit Profile" class="button rounded red">
+   </form>

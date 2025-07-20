@@ -1,0 +1,114 @@
+//Edit records using servlets and jsp together updata database
+
+    package sg.edu.nyp.feppz;
+
+    import java.io.IOException;
+    import java.sql.Connection;
+    import java.sql.DriverManager;
+    import java.sql.PreparedStatement;
+
+
+    import javax.servlet.ServletException;
+    import javax.servlet.http.HttpServlet;
+    import javax.servlet.http.HttpServletRequest;
+    import javax.servlet.http.HttpServletResponse;
+    import sg.edu.nyp.feppz.user.User;
+
+    /**
+    * Servlet implementation class Product
+    */
+    public class Product extends HttpServlet {
+       private static final long serialVersionUID = 1L;
+           
+        /**
+         * @see HttpServlet#HttpServlet()
+         */
+        public Product() {
+            super();
+            // TODO Auto-generated constructor stub
+        }
+
+       /**
+        * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+        */
+       protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+          // TODO Auto-generated method stub
+       }
+
+       /**
+        * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+        */
+       protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+          
+          //Retreive the user data from the session object
+          User user = (User)request.getSession().getAttribute("USER_DATA");
+          if(user == null) {
+             //if user == null, it means that the user did not login.
+             //redirect him to the login page
+             response.sendRedirect("Login.jsp");
+             return;
+          }
+          
+
+          //retrieve the product text from the form in the InsertProduct.jsp file
+          if(request.getParameter("ProdName") == null || request.getParameter("ProdName").equals(""))
+          {
+             //if it is null => something is wrong, send the browser back to the
+             //InsertProduct.jsp file
+             response.sendRedirect("InsertProduct.jsp");
+             return;
+          }
+          
+          //Connect to database
+          try {
+             //Ensure the the driver class is loaded.
+             Class.forName("com.mysql.jdbc.Driver");
+             //Create a connection to our database.
+             //localhost = server name
+             //myshop = database name
+             //root = user name, password = empty
+             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/peisze", "root", "");
+             //create an SQL statement, ? marks denote values that we will add later
+             PreparedStatement ps = con.prepareStatement("INSERT INTO products VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+             
+             //replace first ? mark with values from the feedbackText text box
+             ps.setString(1, request.getParameter("ProductId"));
+             
+             //replace first ? mark with values from the feedbackText text box
+             ps.setString(2, request.getParameter("ProdName"));
+             
+             //replace second ? mark with ProdColor
+             ps.setString(3, request.getParameter("ProdColor"));
+             
+             //replace third ? mark with prodDesc
+             ps.setString(4, request.getParameter("ProdDesc"));
+             
+             //replace fourth ? mark with UnitPrice
+             ps.setFloat(5, Float.parseFloat(request.getParameter("UnitPrice")));
+             
+             //replace fifth ? mark with Quantity
+             ps.setString(6, request.getParameter("Quantity"));
+             
+             //replace sixth ? mark with ProdCatId
+             ps.setInt(7, Integer.parseInt(request.getParameter("ProdCatId")));
+             
+             //replace seventh ? mark with values from the product text box
+             ps.setInt(8, user.getUserId());
+             
+       //execute to insert into the database
+             
+             
+             ps.executeUpdate();
+             //close connection
+             con.close();
+             //redirect user to ProductSucceed.jsp page
+             response.sendRedirect("ProductSucceed.jsp");
+             
+          } catch (Exception e) {
+             e.printStackTrace();
+             return;
+          }
+          
+       }
+
+    }

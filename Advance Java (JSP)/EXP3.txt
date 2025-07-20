@@ -1,0 +1,71 @@
+
+/* How to Edit input type text field created from servlet */
+
+//SERVLET CODE
+
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html;charset=UTF-8");
+
+        String noOfNodeSt = request.getParameter("numberOfNodes");
+        String action = request.getParameter("action");
+
+        PrintWriter out = response.getWriter();
+        try {
+
+            if (action.compareTo("actionOnSelectedNode") == 0) {
+                int numOfSelectedNodeReceived = Integer.parseInt(request.getParameter("numberOfNodes").toString());
+
+                for (int i = 0; i < numOfSelectedNodeReceived; i++) {
+                    out.println("<select class='nodeFromDB"+i+"'>");
+                    out.println("<option>Servlet Action1</option>");
+                    out.println("<option>Servlet Action2</option>");
+                    out.println("</select>");
+                    out.println("<input type=\"text\" name=\"userValue\" />");
+
+                }    
+            }
+        } finally {
+            out.close();
+        }
+    }
+
+//JS CODE
+
+$(function() {
+
+    $('#nodeType').bind('change', function(ev) {
+
+        var value = $(this).val();
+        if (value === 'Single Node') {
+            //alert("g");
+            document.getElementById("spanSetNoOfNodes").innerHTML = "<input type='text' value='1' class='textBoxNoOfNode' readonly/><input type='button' value='Generate' onclick='tfc();' class='generateButtonAction' id='generateButtonAction'/>";
+
+        } else if (value === 'Multiple Nodes') {
+            //alert("g");
+            document.getElementById("spanSetNoOfNodes").innerHTML = "<input type='text' value='1' class='textBoxNoOfNode'/><input type='button' value='Generate' onclick='tfc();' class='generateButtonAction' id='generateButtonAction'/>";
+
+        }
+
+         $(document.body).on('click', 'input', function() {
+         //alert($('.textBoxNoOfNode').val());
+         $.ajax({
+         url: 'http://localhost:8080/M08CDECUStructuralOptimiser/Interface1?action=actionOnSelectedNode',
+         data: {numberOfNodes: $('.textBoxNoOfNode').val()},
+         success: function(response) {
+         //$('.upItemName').append(response);
+         document.getElementById("test3").innerHTML = response;
+         }
+         });
+         });
+
+
+
+
+    });
+
+
+});
+
+
